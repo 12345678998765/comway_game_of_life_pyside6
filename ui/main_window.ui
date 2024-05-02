@@ -64,7 +64,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>201</width>
+          <width>202</width>
           <height>871</height>
          </rect>
         </property>
@@ -106,14 +106,14 @@
          <item row="12" column="0">
           <widget class="QCheckBox" name="checkBox_show_tail">
            <property name="text">
-            <string>显示轨迹</string>
+            <string>Show tail</string>
            </property>
           </widget>
          </item>
          <item row="12" column="1">
           <widget class="QPushButton" name="pushButton_clear_tail">
            <property name="text">
-            <string>清除轨迹</string>
+            <string>clear tail</string>
            </property>
           </widget>
          </item>
@@ -139,7 +139,7 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>清空</string>
+            <string>Clear</string>
            </property>
           </widget>
          </item>
@@ -152,7 +152,7 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>帧数：</string>
+            <string>FPS:</string>
            </property>
           </widget>
          </item>
@@ -168,21 +168,21 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>开始</string>
+            <string>Start</string>
            </property>
           </widget>
          </item>
          <item row="7" column="0">
           <widget class="QLabel" name="label_2">
            <property name="text">
-            <string>当前代数：</string>
+            <string>GenNum:</string>
            </property>
           </widget>
          </item>
          <item row="5" column="0">
           <widget class="QLabel" name="label_3">
            <property name="text">
-            <string>当前状态：</string>
+            <string>State:</string>
            </property>
           </widget>
          </item>
@@ -199,52 +199,52 @@
          <item row="3" column="0" colspan="2">
           <widget class="QPushButton" name="pushButton_random_gen">
            <property name="text">
-            <string>随机生成</string>
+            <string>Random initialization</string>
            </property>
           </widget>
          </item>
          <item row="11" column="0">
           <widget class="QLabel" name="label_7">
            <property name="text">
-            <string>边界模式：</string>
+            <string>border mode:</string>
            </property>
           </widget>
          </item>
          <item row="2" column="0" colspan="2">
           <widget class="QPushButton" name="pushButton_stop">
            <property name="text">
-            <string>停止</string>
+            <string>Stop</string>
            </property>
           </widget>
          </item>
          <item row="13" column="0" colspan="2">
           <widget class="QCheckBox" name="checkBox_trace_1_gen">
            <property name="text">
-            <string>死亡后停留一代痕迹</string>
+            <string>Leave traces after death</string>
            </property>
           </widget>
          </item>
          <item row="4" column="0" colspan="2">
           <widget class="QPushButton" name="pushButton_next_step">
            <property name="text">
-            <string>下一代</string>
+            <string>Next generation</string>
            </property>
           </widget>
          </item>
          <item row="9" column="1">
-          <widget class="QLineEdit" name="lineEdit_random_radio"/>
+          <widget class="QLineEdit" name="lineEdit_random_ratio"/>
          </item>
          <item row="9" column="0">
           <widget class="QLabel" name="label_5">
            <property name="text">
-            <string>随机生成：</string>
+            <string>Random ratio:</string>
            </property>
           </widget>
          </item>
          <item row="10" column="0">
           <widget class="QLabel" name="label_6">
            <property name="text">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;细胞大小：&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            <string>Cell size:</string>
            </property>
           </widget>
          </item>
@@ -254,7 +254,7 @@
          <item row="14" column="0" colspan="2">
           <widget class="QCheckBox" name="checkBox_show_grid">
            <property name="text">
-            <string>显示网格</string>
+            <string>Show grid</string>
            </property>
           </widget>
          </item>
@@ -273,7 +273,7 @@
         <zorder>lineEdit_gens_per_sec</zorder>
         <zorder>pushButton_next_step</zorder>
         <zorder>label_5</zorder>
-        <zorder>lineEdit_random_radio</zorder>
+        <zorder>lineEdit_random_ratio</zorder>
         <zorder>label_6</zorder>
         <zorder>lineEdit_cell_size</zorder>
         <zorder>comboBox_board_pattern</zorder>

@@ -31,11 +31,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.lineEdit_gens_per_sec.setText(f"{FPS}")
         self.lineEdit_cell_size.setText(f"{CELL_SIZE}")
         self.lineEdit_random_ratio.setText(f"{RANDOM_RATIO}")
-        self.comboBox_board_pattern.addItem('有界模式')
-        self.comboBox_board_pattern.addItem('甜甜圈模式')
+        self.comboBox_board_pattern.addItem('bordered')
+        self.comboBox_board_pattern.addItem('donut')
         self.comboBox_board_pattern.setCurrentIndex(0)
 
-        self.label_current_status.setText("准备就绪")
+        self.label_current_status.setText("Ready")
         self.checkBox_show_grid.setChecked(False)
 
     def resizeEvent(self, event):
@@ -84,9 +84,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     @Slot()
     def on_comboBox_board_pattern_currentIndexChanged(self):
-        if self.comboBox_board_pattern.currentText() == '有界模式':
+        if self.comboBox_board_pattern.currentText() == 'bordered':
             self.widget_paint_area.survival_world = constants.Flag.Grid.survival_world_border
-        if self.comboBox_board_pattern.currentText() == '甜甜圈模式':
+        if self.comboBox_board_pattern.currentText() == 'donut':
             self.widget_paint_area.survival_world = constants.Flag.Grid.survival_world_donut
 
     @Slot()
@@ -140,7 +140,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.widget_paint_area.update()
 
     @Slot()
-    def on_lineEdit_random_radio_editingFinished(self):
+    def on_lineEdit_random_ratio_editingFinished(self):
         try:
             if float(self.lineEdit_random_ratio.text()) >= 1:
                 self.widget_paint_area.random_radio = 0.99
@@ -161,7 +161,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.widget_paint_area.running = False
         self.simulation.flag = False
         self.simulation.quit()
-        self.label_current_status.setText("已清空")
+        self.label_current_status.setText("Cleared")
         self.widget_paint_area.gens = 0
         self.label_show_gens.setText("")
 
@@ -171,14 +171,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             return
         self.widget_paint_area.running = True
         self.simulation.start()
-        self.label_current_status.setText("正在运行")
+        self.label_current_status.setText("Running")
 
     @Slot()
     def on_pushButton_stop_clicked(self):
         self.widget_paint_area.running = False
         self.simulation.flag = False
         self.simulation.quit()
-        self.label_current_status.setText("已停止")
+        self.label_current_status.setText("Stopped")
 
     @Slot()
     def on_pushButton_random_gen_clicked(self):
