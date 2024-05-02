@@ -64,6 +64,7 @@ class Grid(QWidget):
         for row in range(self.rows):
             for col in range(self.cols):
                 self.cells[row][col] = random() < self.random_radio
+                self.decorate_cells[row][col] = 0
 
     def clear(self):
         self.cells = [[0 for _x in range(self.width)] for _y in range(self.height)]
