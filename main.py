@@ -1,5 +1,6 @@
 import sys
 
+import numpy as np
 from PySide6.QtCore import Slot
 from PySide6.QtWidgets import QApplication, QMainWindow, QLabel
 
@@ -132,10 +133,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.widget_paint_area.cell_size = self.cell_size
         self.widget_paint_area.rows = self.height // self.cell_size
         self.widget_paint_area.cols = self.width // self.cell_size
-        self.widget_paint_area.cells = [[0 for _x in range(self.widget_paint_area.cols)] for _y in
-                                        range(self.widget_paint_area.rows)]
-        self.widget_paint_area.decorate_cells = [[0 for _x in range(self.widget_paint_area.cols)] for _y in
-                                                 range(self.widget_paint_area.rows)]
+        self.widget_paint_area.cells = np.zeros((self.widget_paint_area.rows, self.widget_paint_area.cols), dtype=int)
+        self.widget_paint_area.decorate_cells = np.zeros((self.widget_paint_area.rows, self.widget_paint_area.cols), dtype=int)
         self.on_pushButton_stop_clicked()
         self.widget_paint_area.update()
 
@@ -225,28 +224,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     @Slot()
     def on_pushButton_clear_tail_clicked(self):
-        for row in range(self.widget_paint_area.rows):
-            for col in range(self.widget_paint_area.cols):
-                self.widget_paint_area.decorate_cells[row][col] &= ~constants.Flag.Grid.show_tail
+        self.widget_paint_area.decorate_cells &= ~constants.Flag.Grid.show_tail
         self.widget_paint_area.update()
 
     @Slot()
     def on_checkBox_trace_1_gen_stateChanged(self):
         self.widget_paint_area.show_traces_of_death = self.checkBox_trace_1_gen.isChecked()
-        flag = False
-        for row in range(self.widget_paint_area.rows):
-            for col in range(self.widget_paint_area.cols):
-                if self.widget_paint_area.decorate_cells[row][col] & constants.Flag.Grid.show_traces_of_death:
-                    flag = True
-                    break
-            if flag:
-                break
-        if flag:
-            return
-        for row in range(self.widget_paint_area.rows):
-            for col in range(self.widget_paint_area.cols):
-                if self.widget_paint_area.cells[row][col]:
-                    self.widget_paint_area.decorate_cells[row][col] |= constants.Flag.Grid.show_traces_of_death
 
     @Slot()
     def on_checkBox_show_grid_stateChanged(self):
