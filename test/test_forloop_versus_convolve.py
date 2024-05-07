@@ -71,23 +71,25 @@ def life_step_convolution(state):
     return state
 
 
-# Compare performance for different grid sizes
-grid_sizes = [10, 20, 50, 100, 200]
+if __name__ == "__main__":
 
-np.random.seed(0)
+    # Compare performance for different grid sizes
+    grid_sizes = [10, 20, 50, 100, 200]
 
-for grid_size in grid_sizes:
-    state = np.zeros((grid_size, grid_size), dtype=int)
+    np.random.seed(0)
 
-    for i in range(grid_size):
-        for j in range(grid_size):
-            state[i, j] = np.random.rand() < 0.25
+    for grid_size in grid_sizes:
+        state = np.zeros((grid_size, grid_size), dtype=int)
 
-    state_copy = state.copy()
+        for i in range(grid_size):
+            for j in range(grid_size):
+                state[i, j] = np.random.rand() < 0.25
 
-    spend_time_forloop_avg = life_step_for_loop(state)
+        state_copy = state.copy()
 
-    state = state_copy.copy()
+        spend_time_forloop_avg = life_step_for_loop(state)
 
-    spend_time_convolve_avg = life_step_convolution(state)
-    print(f"About {spend_time_forloop_avg / spend_time_convolve_avg:.2f}x faster")
+        state = state_copy.copy()
+
+        spend_time_convolve_avg = life_step_convolution(state)
+        print(f"About {spend_time_forloop_avg / spend_time_convolve_avg:.2f}x faster")
