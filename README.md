@@ -70,7 +70,6 @@ python3 main.py
       <div> <img src="./images/glider.gif" width="670px" alt="glider.gif"> </div> You can imagine the glider is an ant, and the surface is a donut surface. The ant moves on the surface.
       <div> <img src="./images/bordered_donut.gif" width="670px" alt="bordered_donut_gif"> </div>
       
-      You can imagine the glider is an ant, and the surface is a donut surface. The ant moves on the surface.
       you can learn more about the _**glider**_ from [here](https://en.wikipedia.org/wiki/Glider_(Conway%27s_Game_of_Life)) and [here](https://en.wikipedia.org/wiki/Gun_(cellular_automaton))
 - Show tail / clear tail
     - You can show the tail or clear the tail, which a cell ever lived and now is dead.
@@ -103,4 +102,4 @@ python3 main.py
 
 ## LICENSE
 
-LGPL-2.1
+MIT LICENSE
