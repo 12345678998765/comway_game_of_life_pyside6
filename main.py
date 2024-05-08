@@ -40,12 +40,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.checkBox_show_grid.setChecked(False)
 
     def resizeEvent(self, event):
-        self.width = self.widget.width()
-        self.height = self.widget.height()
-        self.widget_paint_area.width = self.width // self.cell_size * self.cell_size
-        self.widget_paint_area.height = self.height // self.cell_size * self.cell_size
-        self.widget_paint_area.setFixedWidth(self.width)
-        self.widget_paint_area.setFixedHeight(self.height)
+        pass
 
     def closeEvent(self, event):
         self.simulation.flag = False
