@@ -1,4 +1,5 @@
 .idea
 /pyproject.toml
+.vscode
 
 *.pyc

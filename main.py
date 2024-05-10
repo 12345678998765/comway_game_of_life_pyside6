@@ -1,7 +1,7 @@
 import sys
 
 import numpy as np
-from PySide6.QtCore import Slot
+from PySide6.QtCore import Slot, Qt
 from PySide6.QtWidgets import QApplication, QMainWindow, QLabel
 
 from logic import constants
@@ -50,33 +50,81 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def mouseMoveEvent(self, event):
         if self.widget_paint_area.running:
             return
-        pos = event.position()
-        row = (int(pos.y()) - PAINT_AREA_OFFSET_Y - 1) // self.cell_size
-        col = (int(pos.x()) - PAINT_AREA_OFFSET_X - 1) // self.cell_size
-        if (row, col) != self.widget_paint_area.last_toggled_cell:
-            self.widget_paint_area.toggle_cell(row, col)
-            self.widget_paint_area.update()
+        if event.buttons() & Qt.MouseButton.LeftButton:
+            """
+                NoButton                 : Qt.MouseButton = ... # 0x0
+                LeftButton               : Qt.MouseButton = ... # 0x1
+                RightButton              : Qt.MouseButton = ... # 0x2
+            """
+            pos = event.position()
+            row = (int(pos.y()) - PAINT_AREA_OFFSET_Y - 1) // self.cell_size
+            col = (int(pos.x()) - PAINT_AREA_OFFSET_X - 1) // self.cell_size
+            new_row = row + self.widget_paint_area.locate_start_location_vector[0]
+            new_col = col + self.widget_paint_area.locate_start_location_vector[1]
+            if (new_row, new_col) != self.widget_paint_area.last_toggled_cell:
+                self.widget_paint_area.toggle_cell(row, col)
+                self.widget_paint_area.update()
 
-        in_area = PAINT_AREA_OFFSET_X < pos.x() < self.widget_paint_area.width + PAINT_AREA_OFFSET_X and PAINT_AREA_OFFSET_Y < pos.y() < self.widget_paint_area.height + PAINT_AREA_OFFSET_Y
+            in_area = PAINT_AREA_OFFSET_X < pos.x() < self.widget_paint_area.width + PAINT_AREA_OFFSET_X and PAINT_AREA_OFFSET_Y < pos.y() < self.widget_paint_area.height + PAINT_AREA_OFFSET_Y
 
-        if (self.widget_paint_area.gens == 0 or self.widget_paint_area.gens == 1) and in_area:
-            self.label_show_gens.setText("1")
-            self.widget_paint_area.gens = 1
+            if (self.widget_paint_area.gens == 0 or self.widget_paint_area.gens == 1) and in_area:
+                self.label_show_gens.setText("1")
+                self.widget_paint_area.gens = 1
+            return
 
     def mousePressEvent(self, event):
         if self.widget_paint_area.running:
             return
-        pos = event.position()
-        row = (int(pos.y()) - PAINT_AREA_OFFSET_Y - 1) // self.cell_size
-        col = (int(pos.x()) - PAINT_AREA_OFFSET_X - 1) // self.cell_size
-        self.widget_paint_area.toggle_cell(row, col)
-        self.widget_paint_area.update()
+        if event.buttons() & Qt.MouseButton.LeftButton:
+            pos = event.position()
+            row = (int(pos.y()) - PAINT_AREA_OFFSET_Y - 1) // self.cell_size
+            col = (int(pos.x()) - PAINT_AREA_OFFSET_X - 1) // self.cell_size
+            self.widget_paint_area.toggle_cell(row, col)
+            self.widget_paint_area.update()
 
-        in_area = PAINT_AREA_OFFSET_X < pos.x() < self.widget_paint_area.width + PAINT_AREA_OFFSET_X and PAINT_AREA_OFFSET_Y < pos.y() < self.widget_paint_area.height + PAINT_AREA_OFFSET_Y
+            in_area = PAINT_AREA_OFFSET_X < pos.x() < self.widget_paint_area.width + PAINT_AREA_OFFSET_X and PAINT_AREA_OFFSET_Y < pos.y() < self.widget_paint_area.height + PAINT_AREA_OFFSET_Y
 
-        if (self.widget_paint_area.gens == 0 or self.widget_paint_area.gens == 1) and in_area:
-            self.label_show_gens.setText("1")
-            self.widget_paint_area.gens = 1
+            if (self.widget_paint_area.gens == 0 or self.widget_paint_area.gens == 1) and in_area:
+                self.label_show_gens.setText("1")
+                self.widget_paint_area.gens = 1
+            return
+        if event.buttons() & Qt.MouseButton.RightButton:
+            pos = event.position()
+            in_area = PAINT_AREA_OFFSET_X < pos.x() < self.widget_paint_area.width + PAINT_AREA_OFFSET_X and PAINT_AREA_OFFSET_Y < pos.y() < self.widget_paint_area.height + PAINT_AREA_OFFSET_Y
+            if in_area:
+                self.widget_paint_area.mouse_right_button_pressed_pos = pos
+
+    def mouseReleaseEvent(self, event):
+        if event.button() == Qt.MouseButton.RightButton:
+            pos = event.position()
+            in_area = PAINT_AREA_OFFSET_X < pos.x() < self.widget_paint_area.width + PAINT_AREA_OFFSET_X and PAINT_AREA_OFFSET_Y < pos.y() < self.widget_paint_area.height + PAINT_AREA_OFFSET_Y
+            if in_area:
+                self.widget_paint_area.mouse_right_button_released_pos = pos
+
+                self.widget_paint_area.grid_move_vector = self.widget_paint_area.get_delta_row_col(self.widget_paint_area.mouse_right_button_released_pos, self.widget_paint_area.mouse_right_button_pressed_pos)
+
+                (self.widget_paint_area.overlapped_start_row_idx, self.widget_paint_area.overlapped_start_col_idx), \
+                    (self.widget_paint_area.overlapped_end_row_idx, self.widget_paint_area.overlapped_end_col_idx), \
+                    self.widget_paint_area.grid_move_vector \
+                    = self.widget_paint_area.move_grid(
+                    self.widget_paint_area.grid_move_vector,
+                    (0, 0),
+
+                    (self.widget_paint_area.rows - 1, self.widget_paint_area.cols - 1),
+                    (self.widget_paint_area.overlapped_start_row_idx, self.widget_paint_area.overlapped_start_col_idx),
+                    (self.widget_paint_area.overlapped_end_row_idx, self.widget_paint_area.overlapped_end_col_idx)
+                )
+                self.widget_paint_area.locate_start_location_vector = self.widget_paint_area.get_locate_start_location_vector(self.widget_paint_area.grid_move_vector)
+                print(f"pos released: {pos}")
+                print(f"pos pressed: {self.widget_paint_area.mouse_right_button_pressed_pos}")
+                print(f"grid_move_vector: {self.widget_paint_area.grid_move_vector}")
+                print(f"TopLeft: ({self.widget_paint_area.overlapped_start_row_idx}, {self.widget_paint_area.overlapped_start_col_idx})")
+                print(f"BottomRight: ({self.widget_paint_area.overlapped_end_row_idx}, {self.widget_paint_area.overlapped_end_col_idx})")
+                print(f"locate_start_location_vector: {self.widget_paint_area.locate_start_location_vector}")
+                print()
+                self.widget_paint_area.update()
+
+            # self.widget_paint_area.update()
 
     @Slot()
     def on_comboBox_board_pattern_currentIndexChanged(self):
@@ -128,9 +176,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.widget_paint_area.cell_size = self.cell_size
         self.widget_paint_area.rows = self.height // self.cell_size
         self.widget_paint_area.cols = self.width // self.cell_size
+        self.widget_paint_area.overlapped_start_col_idx = 0
+        self.widget_paint_area.overlapped_end_col_idx = self.widget_paint_area.cols - 1
+        self.widget_paint_area.overlapped_start_row_idx = 0
+        self.widget_paint_area.overlapped_end_row_idx = self.widget_paint_area.rows - 1
         self.widget_paint_area.cells = np.zeros((self.widget_paint_area.rows, self.widget_paint_area.cols), dtype=int)
         self.widget_paint_area.decorate_cells = np.zeros((self.widget_paint_area.rows, self.widget_paint_area.cols), dtype=int)
         self.on_pushButton_stop_clicked()
+        self.widget_paint_area.is_resized = True
         self.widget_paint_area.update()
 
     @Slot()
