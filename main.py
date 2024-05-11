@@ -73,6 +73,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             return
 
     def mousePressEvent(self, event):
+        if event.buttons() & Qt.MouseButton.RightButton:
+            pos = event.position()
+            in_area = PAINT_AREA_OFFSET_X < pos.x() < self.widget_paint_area.width + PAINT_AREA_OFFSET_X and PAINT_AREA_OFFSET_Y < pos.y() < self.widget_paint_area.height + PAINT_AREA_OFFSET_Y
+            if in_area:
+                self.widget_paint_area.mouse_right_button_pressed_pos = pos
         if self.widget_paint_area.running:
             return
         if event.buttons() & Qt.MouseButton.LeftButton:
@@ -88,11 +93,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 self.label_show_gens.setText("1")
                 self.widget_paint_area.gens = 1
             return
-        if event.buttons() & Qt.MouseButton.RightButton:
-            pos = event.position()
-            in_area = PAINT_AREA_OFFSET_X < pos.x() < self.widget_paint_area.width + PAINT_AREA_OFFSET_X and PAINT_AREA_OFFSET_Y < pos.y() < self.widget_paint_area.height + PAINT_AREA_OFFSET_Y
-            if in_area:
-                self.widget_paint_area.mouse_right_button_pressed_pos = pos
 
     def mouseReleaseEvent(self, event):
         if event.button() == Qt.MouseButton.RightButton:
@@ -115,16 +115,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     (self.widget_paint_area.overlapped_end_row_idx, self.widget_paint_area.overlapped_end_col_idx)
                 )
                 self.widget_paint_area.locate_start_location_vector = self.widget_paint_area.get_locate_start_location_vector(self.widget_paint_area.grid_move_vector)
-                print(f"pos released: {pos}")
-                print(f"pos pressed: {self.widget_paint_area.mouse_right_button_pressed_pos}")
-                print(f"grid_move_vector: {self.widget_paint_area.grid_move_vector}")
-                print(f"TopLeft: ({self.widget_paint_area.overlapped_start_row_idx}, {self.widget_paint_area.overlapped_start_col_idx})")
-                print(f"BottomRight: ({self.widget_paint_area.overlapped_end_row_idx}, {self.widget_paint_area.overlapped_end_col_idx})")
-                print(f"locate_start_location_vector: {self.widget_paint_area.locate_start_location_vector}")
-                print()
                 self.widget_paint_area.update()
-
-            # self.widget_paint_area.update()
 
     @Slot()
     def on_comboBox_board_pattern_currentIndexChanged(self):

@@ -4,8 +4,6 @@
 
 This is a simple implementation of Conway's Game of Life using PySide6. The game is a zero-player game, meaning that its evolution is determined by its initial state, requiring no further input. One interacts with the Game of Life by creating an initial configuration and observing how it evolves.
 
-Through this program, you can learn about the Game of Life and how it works. You can also learn how to implement the Game of Life using PySide6.
-
 If you want to know more about the game, you can wiki it and see some videos on YouTube.
 
 If you like to use QT, normally you can replace PySide6 with PyQt6

@@ -163,23 +163,48 @@ class Grid(QWidget):
     def get_last_synthesized_grid_move_vector(grid_1: GridSE, grid_2: GridSE) -> GridMoveVector:
         grid1_TopLeft, grid1_BottomRight = grid_1  # screen
         grid2_TopLeft, grid2_BottomRight = grid_2  # overlapped
-        max_idx = grid1_BottomRight[0] - grid1_TopLeft[0]
 
-        abs_delta_row = (grid1_BottomRight[0] - grid1_TopLeft[0]) - (grid2_BottomRight[0] - grid2_TopLeft[0])
-        abs_delta_col = (grid1_BottomRight[1] - grid1_TopLeft[1]) - (grid2_BottomRight[1] - grid2_TopLeft[1])
+        direction = [
+            grid2_TopLeft[0] - grid1_TopLeft[0],
+            grid2_TopLeft[1] - grid1_TopLeft[1],
+            grid2_BottomRight[0] - grid1_BottomRight[0],
+            grid2_BottomRight[1] - grid1_BottomRight[1],
+        ]
 
-        if grid2_TopLeft == (0, 0) and grid2_BottomRight == (max_idx, max_idx):
-            return abs_delta_row, abs_delta_col
-        elif grid2_TopLeft == (0, 0) and grid2_BottomRight != (max_idx, max_idx):
-            return -abs_delta_row, -abs_delta_col
-        elif grid2_TopLeft != (0, 0) and grid2_BottomRight == (max_idx, max_idx):
-            return abs_delta_row, abs_delta_col
-        elif grid2_TopLeft[0] > 0 and grid2_BottomRight[1] < max_idx:
-            return -abs_delta_row, abs_delta_col
-        elif grid2_TopLeft[1] > 0 and grid2_BottomRight[0] < max_idx:
-            return abs_delta_row, -abs_delta_col
+        if direction[0] == 0 and direction[1] == 0 and direction[2] == 0 and direction[3] == 0:
+            return 0, 0
+        elif direction[0] == 0 and direction[1] == 0 and direction[2] == 0 and direction[3] != 0:
+            # <--
+            return 0, direction[3]
+        elif direction[0] == 0 and direction[1] == 0 and direction[2] != 0 and direction[3] == 0:
+            # ^
+            # |
+            return direction[2], 0
+        elif direction[0] == 0 and direction[1] != 0 and direction[2] == 0 and direction[3] == 0:
+            # -->
+            return 0, direction[1]
+        elif direction[0] != 0 and direction[1] == 0 and direction[2] == 0 and direction[3] == 0:
+            # |
+            # v
+            return direction[0], 0
+        elif direction[0] == 0 and direction[1] == 0 and direction[2] != 0 and direction[3] != 0:
+            # ^
+            # | <--
+            return direction[2], direction[3]
+        elif direction[0] != 0 and direction[1] != 0 and direction[2] == 0 and direction[3] == 0:
+            # |
+            # v -->
+            return direction[0], direction[1]
+        elif direction[0] != 0 and direction[1] == 0 and direction[2] == 0 and direction[3] != 0:
+            # | <--
+            # v
+            return direction[0], direction[3]
+        elif direction[0] == 0 and direction[1] != 0 and direction[2] != 0 and direction[3] == 0:
+            # ^ -->
+            # |
+            return direction[2], direction[1]
         else:
-            raise ValueError("Invalid grid move vector.")
+            raise ValueError("Invalid direction.")
 
     def move_grid(self, grid_move_vector: GridMoveVector, origin_grid_TopLeft, origin_grid_BottomRight, overlapped_grid_TopLeft, overlapped_grid_BottomRight):
         last_synthesized_grid_move_vector = self.get_last_synthesized_grid_move_vector((origin_grid_TopLeft, origin_grid_BottomRight), (overlapped_grid_TopLeft, overlapped_grid_BottomRight))
@@ -207,15 +232,8 @@ class Grid(QWidget):
         return new_overlapped_grid_TopLeft, new_overlapped_grid_BottomRight, new_grid_move_vector
 
     def get_delta_row_col(self, released_pos: QMouseEvent.position, pressed_pos: QMouseEvent.position):
-        cell_size = self.cell_size
-        if released_pos.y() < pressed_pos.y():
-            _delta_row = -(-(int(released_pos.y()) - int(pressed_pos.y())) // cell_size)
-        else:
-            _delta_row = (int(released_pos.y()) - int(pressed_pos.y())) // cell_size
-        if released_pos.x() < pressed_pos.x():
-            _delta_col = -(-(int(released_pos.x()) - int(pressed_pos.x())) // cell_size)
-        else:
-            _delta_col = (int(released_pos.x()) - int(pressed_pos.x())) // cell_size
+        _delta_row = int(round(released_pos.y() - pressed_pos.y(), 0)) // self.cell_size
+        _delta_col = int(round(released_pos.x() - pressed_pos.x(), 0)) // self.cell_size
         return _delta_row, _delta_col
 
 
