@@ -82,6 +82,8 @@ class Grid(QWidget):
                     self.is_resized = False
                     self.cells = np.zeros((self.rows, self.cols), dtype=int)
                     self.decorate_cells = np.zeros((self.rows, self.cols), dtype=int)
+                    self.grid_move_vector = (0, 0)
+                    self.locate_start_location_vector = self.get_locate_start_location_vector(self.grid_move_vector)
                     self.update()
                     return
                 else:
