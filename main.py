@@ -17,13 +17,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self.setWindowTitle("Conway's Game of Life")
 
-        self.horizontalLayout.addWidget(self.widget)
-        self.width = self.widget.width()
-        self.height = self.widget.height()
+        self.width = constants.INIT_DRAW_WIDTH
+        self.height = constants.INIT_DRAW_HEIGHT
         self.cell_size = CELL_SIZE
         self.widget_paint_area = Grid(self.width, self.height, self.cell_size)
 
-        self.verticalLayout.addWidget(self.widget_paint_area)
+        self.horizontalLayout.addWidget(self.widget_paint_area)
         self.widget_control_panel.setFixedWidth(200)
 
         self.simulation = SimulationThread(show_gens_label=self.label_show_gens)
@@ -180,10 +179,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     @Slot()
     def on_lineEdit_random_ratio_editingFinished(self):
         try:
-            if float(self.lineEdit_random_ratio.text()) >= 1:
+            if float(self.lineEdit_random_ratio.text()) >= 0.99:
                 self.widget_paint_area.random_radio = 0.99
                 self.lineEdit_random_ratio.setText("0.99")
-            if float(self.lineEdit_random_ratio.text()) <= 0:
+            if float(self.lineEdit_random_ratio.text()) <= 0.01:
                 self.widget_paint_area.random_radio = 0.01
                 self.lineEdit_random_ratio.setText("0.01")
             if 0 < float(self.lineEdit_random_ratio.text()) < 1:
