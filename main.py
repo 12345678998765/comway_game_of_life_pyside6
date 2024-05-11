@@ -2,7 +2,7 @@ import sys
 
 import numpy as np
 from PySide6.QtCore import Slot, Qt
-from PySide6.QtWidgets import QApplication, QMainWindow, QLabel
+from PySide6.QtWidgets import QApplication, QMainWindow, QLabel, QHBoxLayout
 
 from logic import constants
 from logic.constants import PAINT_AREA_OFFSET_X, PAINT_AREA_OFFSET_Y, CELL_SIZE, FPS, RANDOM_RATIO
@@ -19,8 +19,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.width = constants.INIT_DRAW_WIDTH
         self.height = constants.INIT_DRAW_HEIGHT
+        self.last_width = self.width
+        self.last_height = self.height
         self.cell_size = CELL_SIZE
         self.widget_paint_area = Grid(self.width, self.height, self.cell_size)
+
+        self.horizontalLayout = QHBoxLayout()
+        self.widget_draw_area.setLayout(self.horizontalLayout)
 
         self.horizontalLayout.addWidget(self.widget_paint_area)
         self.widget_control_panel.setFixedWidth(200)
@@ -34,6 +39,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.comboBox_board_pattern.addItem('bordered')
         self.comboBox_board_pattern.addItem('donut')
         self.comboBox_board_pattern.setCurrentIndex(0)
+        self.lineEdit_surface_width.setText(f"{self.width}")
+        self.lineEdit_surface_height.setText(f"{self.height}")
 
         self.label_current_status.setText("Ready")
         self.checkBox_show_grid.setChecked(False)
@@ -222,6 +229,81 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.widget_paint_area.fill_random()
         self.label_show_gens.setText("1")
         self.widget_paint_area.gens = 1
+        self.widget_paint_area.update()
+
+    @Slot()
+    def on_pushButton_reset_surface_position_clicked(self):
+        self.widget_paint_area.overlapped_start_row_idx = 0
+        self.widget_paint_area.overlapped_end_row_idx = self.widget_paint_area.rows - 1
+        self.widget_paint_area.overlapped_start_col_idx = 0
+        self.widget_paint_area.overlapped_end_col_idx = self.widget_paint_area.cols - 1
+        self.widget_paint_area.grid_move_vector = (0, 0)
+        self.widget_paint_area.locate_start_location_vector = (0, 0)
+        self.widget_paint_area.update()
+
+    def surface_width_height(self, width_height: str, line_edit_obj):
+        if line_edit_obj.text().isdigit():
+            if int(line_edit_obj.text()) > 2000:
+                setattr(self, width_height, 2000)
+                line_edit_obj.setText("2000")
+            if int(line_edit_obj.text()) < 100:
+                setattr(self, width_height, 100)
+                line_edit_obj.setText("100")
+            if 100 <= int(line_edit_obj.text()) <= 2000:
+                setattr(self, width_height, int(line_edit_obj.text()))
+        else:
+            try:
+                if 100 <= float(line_edit_obj.text()) <= 2000:
+                    setattr(self, width_height, int(round(float(line_edit_obj.text()), 0)))
+                    line_edit_obj.setText(str(round(float(line_edit_obj.text())))
+                                          )
+                    return
+                if float(line_edit_obj.text()) > 2000:
+                    setattr(self, width_height, 2000)
+                    line_edit_obj.setText("2000")
+                    return
+                if float(line_edit_obj.text()) < 100:
+                    setattr(self, width_height, 100)
+                    line_edit_obj.setText("100")
+                    return
+            except ValueError:
+                setattr(self, width_height, 800)
+                line_edit_obj.setText("800")
+
+    @Slot()
+    def on_lineEdit_surface_width_editingFinished(self):
+        self.surface_width_height("width", self.lineEdit_surface_width)
+        if self.last_width == self.width:
+            return
+        else:
+            self.last_width = self.width
+        self.pushButton_clean_surface.click()
+        self.widget_paint_area.width = self.width
+        self.widget_paint_area.cols = self.width // self.cell_size
+        self.widget_paint_area.overlapped_start_col_idx = 0
+        self.widget_paint_area.overlapped_end_col_idx = self.widget_paint_area.cols - 1
+        self.widget_paint_area.cells = np.zeros((self.widget_paint_area.rows, self.widget_paint_area.cols), dtype=int)
+        self.widget_paint_area.decorate_cells = np.zeros((self.widget_paint_area.rows, self.widget_paint_area.cols), dtype=int)
+        self.widget_paint_area.grid_move_vector = (0, 0)
+        self.widget_paint_area.locate_start_location_vector = (0, 0)
+        self.widget_paint_area.update()
+
+    @Slot()
+    def on_lineEdit_surface_height_editingFinished(self):
+        self.surface_width_height("height", self.lineEdit_surface_height)
+        if self.last_height == self.height:
+            return
+        else:
+            self.last_height = self.height
+        self.pushButton_clean_surface.click()
+        self.widget_paint_area.height = self.height
+        self.widget_paint_area.rows = self.height // self.cell_size
+        self.widget_paint_area.overlapped_start_row_idx = 0
+        self.widget_paint_area.overlapped_end_row_idx = self.widget_paint_area.rows - 1
+        self.widget_paint_area.cells = np.zeros((self.widget_paint_area.rows, self.widget_paint_area.cols), dtype=int)
+        self.widget_paint_area.decorate_cells = np.zeros((self.widget_paint_area.rows, self.widget_paint_area.cols), dtype=int)
+        self.widget_paint_area.grid_move_vector = (0, 0)
+        self.widget_paint_area.locate_start_location_vector = (0, 0)
         self.widget_paint_area.update()
 
     @Slot()
