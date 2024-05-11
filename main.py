@@ -5,7 +5,7 @@ from PySide6.QtCore import Slot, Qt
 from PySide6.QtWidgets import QApplication, QMainWindow, QLabel, QHBoxLayout
 
 from logic import constants
-from logic.constants import PAINT_AREA_OFFSET_X, PAINT_AREA_OFFSET_Y, CELL_SIZE, FPS, RANDOM_RATIO
+from logic.constants import CELL_SIZE, FPS, RANDOM_RATIO
 from logic.grid import Grid
 from logic.simulation import SimulationThread
 from ui.main_window import Ui_MainWindow
@@ -17,6 +17,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self.setWindowTitle("Conway's Game of Life")
 
+        self.window_size = self.size()
+        self.widget_control_panel_width = 200
+        self.horizontalLayout_contents_margin = 0
+        self.gridLayout_horizontalSpacing = self.gridLayout.horizontalSpacing()
+
+        self.anchor_width = self.widget_control_panel_width + self.gridLayout_horizontalSpacing + self.horizontalLayout_contents_margin
+        self.anchor_height = self.horizontalLayout_contents_margin
+
         self.width = constants.INIT_DRAW_WIDTH
         self.height = constants.INIT_DRAW_HEIGHT
         self.last_width = self.width
@@ -25,10 +33,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.widget_paint_area = Grid(self.width, self.height, self.cell_size)
 
         self.horizontalLayout = QHBoxLayout()
+        self.horizontalLayout.setContentsMargins(
+            self.horizontalLayout_contents_margin,
+            self.horizontalLayout_contents_margin,
+            self.horizontalLayout_contents_margin,
+            self.horizontalLayout_contents_margin
+        )
         self.widget_draw_area.setLayout(self.horizontalLayout)
 
         self.horizontalLayout.addWidget(self.widget_paint_area)
-        self.widget_control_panel.setFixedWidth(200)
+        self.widget_control_panel.setFixedWidth(self.widget_control_panel_width)
 
         self.simulation = SimulationThread(show_gens_label=self.label_show_gens)
         self.simulation.sig[QLabel].connect(self.widget_paint_area.simulation)
@@ -63,15 +77,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 RightButton              : Qt.MouseButton = ... # 0x2
             """
             pos = event.position()
-            row = (int(pos.y()) - PAINT_AREA_OFFSET_Y - 1) // self.cell_size
-            col = (int(pos.x()) - PAINT_AREA_OFFSET_X - 1) // self.cell_size
+            row = (int(pos.y()) - self.anchor_height - 1) // self.cell_size
+            col = (int(pos.x()) - self.anchor_width - 1) // self.cell_size
             new_row = row + self.widget_paint_area.locate_start_location_vector[0]
             new_col = col + self.widget_paint_area.locate_start_location_vector[1]
             if (new_row, new_col) != self.widget_paint_area.last_toggled_cell:
                 self.widget_paint_area.toggle_cell(row, col)
                 self.widget_paint_area.update()
 
-            in_area = PAINT_AREA_OFFSET_X < pos.x() < self.widget_paint_area.width + PAINT_AREA_OFFSET_X and PAINT_AREA_OFFSET_Y < pos.y() < self.widget_paint_area.height + PAINT_AREA_OFFSET_Y
+            in_area = self.anchor_width < pos.x() < self.widget_paint_area.width + self.anchor_width and self.anchor_height < pos.y() < self.widget_paint_area.height + self.anchor_height
 
             if (self.widget_paint_area.gens == 0 or self.widget_paint_area.gens == 1) and in_area:
                 self.label_show_gens.setText("1")
@@ -81,19 +95,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def mousePressEvent(self, event):
         if event.buttons() & Qt.MouseButton.RightButton:
             pos = event.position()
-            in_area = PAINT_AREA_OFFSET_X < pos.x() < self.widget_paint_area.width + PAINT_AREA_OFFSET_X and PAINT_AREA_OFFSET_Y < pos.y() < self.widget_paint_area.height + PAINT_AREA_OFFSET_Y
+            in_area = self.anchor_width < pos.x() < self.widget_paint_area.width + self.anchor_width and self.anchor_height < pos.y() < self.widget_paint_area.height + self.anchor_height
             if in_area:
                 self.widget_paint_area.mouse_right_button_pressed_pos = pos
         if self.widget_paint_area.running:
             return
         if event.buttons() & Qt.MouseButton.LeftButton:
             pos = event.position()
-            row = (int(pos.y()) - PAINT_AREA_OFFSET_Y - 1) // self.cell_size
-            col = (int(pos.x()) - PAINT_AREA_OFFSET_X - 1) // self.cell_size
+            row = (int(pos.y()) - self.anchor_height - 1) // self.cell_size
+            col = (int(pos.x()) - self.anchor_width - 1) // self.cell_size
             self.widget_paint_area.toggle_cell(row, col)
             self.widget_paint_area.update()
 
-            in_area = PAINT_AREA_OFFSET_X < pos.x() < self.widget_paint_area.width + PAINT_AREA_OFFSET_X and PAINT_AREA_OFFSET_Y < pos.y() < self.widget_paint_area.height + PAINT_AREA_OFFSET_Y
+            in_area = self.anchor_width < pos.x() < self.widget_paint_area.width + self.anchor_width and self.anchor_height < pos.y() < self.widget_paint_area.height + self.anchor_height
 
             if (self.widget_paint_area.gens == 0 or self.widget_paint_area.gens == 1) and in_area:
                 self.label_show_gens.setText("1")
@@ -103,7 +117,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def mouseReleaseEvent(self, event):
         if event.button() == Qt.MouseButton.RightButton:
             pos = event.position()
-            in_area = PAINT_AREA_OFFSET_X < pos.x() < self.widget_paint_area.width + PAINT_AREA_OFFSET_X and PAINT_AREA_OFFSET_Y < pos.y() < self.widget_paint_area.height + PAINT_AREA_OFFSET_Y
+            in_area = self.anchor_width < pos.x() < self.widget_paint_area.width + self.anchor_width and self.anchor_height < pos.y() < self.widget_paint_area.height + self.anchor_height
             if in_area:
                 self.widget_paint_area.mouse_right_button_released_pos = pos
 
