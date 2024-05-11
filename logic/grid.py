@@ -166,45 +166,45 @@ class Grid(QWidget):
         grid1_TopLeft, grid1_BottomRight = grid_1  # screen
         grid2_TopLeft, grid2_BottomRight = grid_2  # overlapped
 
-        direction = [
+        direction_steps = [
             grid2_TopLeft[0] - grid1_TopLeft[0],
             grid2_TopLeft[1] - grid1_TopLeft[1],
             grid2_BottomRight[0] - grid1_BottomRight[0],
             grid2_BottomRight[1] - grid1_BottomRight[1],
         ]
 
-        if direction[0] == 0 and direction[1] == 0 and direction[2] == 0 and direction[3] == 0:
+        if direction_steps[0] == 0 and direction_steps[1] == 0 and direction_steps[2] == 0 and direction_steps[3] == 0:
             return 0, 0
-        elif direction[0] == 0 and direction[1] == 0 and direction[2] == 0 and direction[3] != 0:
+        elif direction_steps[0] == 0 and direction_steps[1] == 0 and direction_steps[2] == 0 and direction_steps[3] != 0:
             # <--
-            return 0, direction[3]
-        elif direction[0] == 0 and direction[1] == 0 and direction[2] != 0 and direction[3] == 0:
+            return 0, direction_steps[3]
+        elif direction_steps[0] == 0 and direction_steps[1] == 0 and direction_steps[2] != 0 and direction_steps[3] == 0:
             # ^
             # |
-            return direction[2], 0
-        elif direction[0] == 0 and direction[1] != 0 and direction[2] == 0 and direction[3] == 0:
+            return direction_steps[2], 0
+        elif direction_steps[0] == 0 and direction_steps[1] != 0 and direction_steps[2] == 0 and direction_steps[3] == 0:
             # -->
-            return 0, direction[1]
-        elif direction[0] != 0 and direction[1] == 0 and direction[2] == 0 and direction[3] == 0:
+            return 0, direction_steps[1]
+        elif direction_steps[0] != 0 and direction_steps[1] == 0 and direction_steps[2] == 0 and direction_steps[3] == 0:
             # |
             # v
-            return direction[0], 0
-        elif direction[0] == 0 and direction[1] == 0 and direction[2] != 0 and direction[3] != 0:
+            return direction_steps[0], 0
+        elif direction_steps[0] == 0 and direction_steps[1] == 0 and direction_steps[2] != 0 and direction_steps[3] != 0:
             # ^
             # | <--
-            return direction[2], direction[3]
-        elif direction[0] != 0 and direction[1] != 0 and direction[2] == 0 and direction[3] == 0:
+            return direction_steps[2], direction_steps[3]
+        elif direction_steps[0] != 0 and direction_steps[1] != 0 and direction_steps[2] == 0 and direction_steps[3] == 0:
             # |
             # v -->
-            return direction[0], direction[1]
-        elif direction[0] != 0 and direction[1] == 0 and direction[2] == 0 and direction[3] != 0:
+            return direction_steps[0], direction_steps[1]
+        elif direction_steps[0] != 0 and direction_steps[1] == 0 and direction_steps[2] == 0 and direction_steps[3] != 0:
             # | <--
             # v
-            return direction[0], direction[3]
-        elif direction[0] == 0 and direction[1] != 0 and direction[2] != 0 and direction[3] == 0:
+            return direction_steps[0], direction_steps[3]
+        elif direction_steps[0] == 0 and direction_steps[1] != 0 and direction_steps[2] != 0 and direction_steps[3] == 0:
             # ^ -->
             # |
-            return direction[2], direction[1]
+            return direction_steps[2], direction_steps[1]
         else:
             raise ValueError("Invalid direction.")
 
