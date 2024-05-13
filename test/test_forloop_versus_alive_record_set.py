@@ -15,6 +15,8 @@ def timeit(times):
                 start_time = time.time()
                 ns = func(*args, **kwargs)
                 total_time += time.time() - start_time
+                if ns.shape[0] == 10 and _ == 0:
+                    print(ns)
             print(f"Average time for {func.__name__}, size {args[0].shape[0]} x {args[0].shape[0]}: {total_time / times:.6f} s/step")
             return total_time / times
 
@@ -57,16 +59,22 @@ class LifeGrid:
             (1, 0),
             (1, 1)
         )
-
         alive_cells = collections.defaultdict(int)  # 0
         for row, col in self.pattern.alive_cells:
             for row_offset, col_offset in neighbors:
-                alive_cells[(row + row_offset, col + col_offset)] += 1
+                if 0 <= row + row_offset < self.shape[0] and 0 <= col + col_offset < self.shape[1]:
+                    alive_cells[(row + row_offset, col + col_offset)] += 1
 
         stay_alive = {cell for cell, count in alive_cells.items() if (count in {2, 3} and cell in self.pattern.alive_cells)}
         born = {cell for cell, count in alive_cells.items() if (count == 3 and cell not in self.pattern.alive_cells)}
         self.pattern.alive_cells = stay_alive | born
         return self.pattern.alive_cells
+
+    def set_2_np(self):
+        state = np.zeros(self.shape, dtype=int)
+        for row, col in self.pattern.alive_cells:
+            state[row, col] = 1
+        return state
 
     def draw(self, start_row, start_col, end_row, end_col):
         display = [self.pattern.name.center(2 * (end_col - start_col))]
@@ -86,9 +94,12 @@ class LifeGrid:
         )
 
 
-@timeit(100)
-def life_step_record_set(lg: LifeGrid):
+@timeit(10)
+def life_step_record_set(state):
+    lg = LifeGrid(get_pattern_from_ndarray("Random", state))
     lg.evolve()
+    new_state = lg.set_2_np()
+    return new_state
 
 
 def count_alive_neighbors(row, col, rows, cols, cells):
@@ -102,7 +113,7 @@ def count_alive_neighbors(row, col, rows, cols, cells):
     return alive_neighbors
 
 
-@timeit(100)
+@timeit(10)
 def life_step_for_loop(state):
     new_state = np.zeros_like(state)
     for row in range(state.shape[0]):
@@ -132,7 +143,7 @@ if __name__ == "__main__":
     # print(grid)
     # print(grid.draw(0, 0, 5, 5))
 
-    grid_sizes = [10, 20, 50, 100, 200]
+    grid_sizes = [10, 20, 50]
 
     np.random.seed(0)
 
@@ -149,5 +160,5 @@ if __name__ == "__main__":
 
         state = state_copy.copy()
 
-        spend_time_convolve_avg = life_step_record_set(LifeGrid(get_pattern_from_ndarray("Random", state)))
-        print(f"About {spend_time_forloop_avg / spend_time_convolve_avg:.2f}x faster")
+        spend_time_alive_record_set_avg = life_step_record_set(state)
+        print(f"About {spend_time_alive_record_set_avg / spend_time_forloop_avg:.2f}x faster")

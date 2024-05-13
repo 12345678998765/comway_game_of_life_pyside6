@@ -15,6 +15,8 @@ def timeit(times):
                 start_time = time.time()
                 ns = func(*args, **kwargs)
                 total_time += time.time() - start_time
+                if ns.shape[0] == 10 and _ == 0:
+                    print(ns)
             print(f"Average time for {func.__name__}, size {args[0].shape[0]} x {args[0].shape[0]}: {total_time / times:.8f} s/step")
             return total_time / times
 
@@ -76,16 +78,13 @@ def life_step_convolution(state):
 if __name__ == "__main__":
 
     # Compare performance for different grid sizes
-    grid_sizes = [1, 10, 20, 50, 100, 200, 500]
+    grid_sizes = [10, 20, 50, 100, 200, 500, 1000, 2000]
 
     np.random.seed(0)
 
     for grid_size in grid_sizes:
-        state = np.zeros((grid_size, grid_size), dtype=int)
-
-        for i in range(grid_size):
-            for j in range(grid_size):
-                state[i, j] = np.random.rand() < 0.25
+        state = np.random.rand(grid_size, grid_size)
+        state = np.where(state < 0.25, 0, 1)
 
         state_copy = state.copy()
 
