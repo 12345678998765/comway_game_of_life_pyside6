@@ -86,103 +86,68 @@
           <property name="verticalSpacing">
            <number>10</number>
           </property>
-          <item row="12" column="0">
-           <widget class="QLabel" name="label_2">
-            <property name="text">
-             <string>GenNum:</string>
-            </property>
-           </widget>
+          <item row="17" column="1">
+           <widget class="QComboBox" name="comboBox_board_pattern"/>
           </item>
-          <item row="4" column="0" colspan="2">
-           <widget class="QPushButton" name="pushButton_next_step">
-            <property name="text">
-             <string>Next generation</string>
-            </property>
-           </widget>
+          <item row="14" column="1">
+           <widget class="QLineEdit" name="lineEdit_gens_per_sec"/>
           </item>
-          <item row="15" column="0">
+          <item row="16" column="1">
+           <widget class="QLineEdit" name="lineEdit_cell_size"/>
+          </item>
+          <item row="16" column="0">
            <widget class="QLabel" name="label_6">
             <property name="text">
              <string>Grid size:</string>
             </property>
            </widget>
           </item>
-          <item row="15" column="1">
-           <widget class="QLineEdit" name="lineEdit_cell_size"/>
-          </item>
-          <item row="0" column="0" colspan="2">
-           <widget class="QPushButton" name="pushButton_clean_surface">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
+          <item row="17" column="0">
+           <widget class="QLabel" name="label_7">
             <property name="text">
-             <string>Clear</string>
+             <string>Border mode:</string>
             </property>
            </widget>
           </item>
-          <item row="12" column="1">
-           <widget class="QLabel" name="label_show_gens">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>82</width>
-              <height>36</height>
-             </size>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item row="13" column="0">
-           <widget class="QLabel" name="label">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>FPS:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="14" column="1">
-           <widget class="QLineEdit" name="lineEdit_random_ratio"/>
-          </item>
-          <item row="10" column="1">
+          <item row="11" column="1">
            <widget class="QLabel" name="label_current_status">
             <property name="text">
              <string/>
             </property>
            </widget>
           </item>
-          <item row="14" column="0">
-           <widget class="QLabel" name="label_5">
-            <property name="text">
-             <string>Random ratio:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="16" column="0">
-           <widget class="QLabel" name="label_7">
-            <property name="text">
-             <string>border mode:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="8" column="1">
-           <widget class="QLineEdit" name="lineEdit_surface_width"/>
-          </item>
-          <item row="17" column="1">
+          <item row="18" column="1">
            <widget class="QPushButton" name="pushButton_clear_tail">
             <property name="text">
              <string>clear tail</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0" colspan="2">
+           <widget class="QPushButton" name="pushButton_random_gen">
+            <property name="text">
+             <string>Random initialization</string>
+            </property>
+           </widget>
+          </item>
+          <item row="11" column="0">
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>State:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="19" column="0" colspan="2">
+           <widget class="QCheckBox" name="checkBox_trace_1_gen">
+            <property name="text">
+             <string>Leave traces after death</string>
+            </property>
+           </widget>
+          </item>
+          <item row="18" column="0">
+           <widget class="QCheckBox" name="checkBox_show_tail">
+            <property name="text">
+             <string>Show tail</string>
             </property>
            </widget>
           </item>
@@ -199,79 +164,7 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0" colspan="2">
-           <widget class="QPushButton" name="pushButton_stop">
-            <property name="text">
-             <string>Stop</string>
-            </property>
-           </widget>
-          </item>
-          <item row="10" column="0">
-           <widget class="QLabel" name="label_3">
-            <property name="text">
-             <string>State:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="16" column="1">
-           <widget class="QComboBox" name="comboBox_board_pattern"/>
-          </item>
-          <item row="17" column="0">
-           <widget class="QCheckBox" name="checkBox_show_tail">
-            <property name="text">
-             <string>Show tail</string>
-            </property>
-           </widget>
-          </item>
-          <item row="8" column="0">
-           <widget class="QLabel" name="label_8">
-            <property name="text">
-             <string>Width:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0" colspan="2">
-           <widget class="QPushButton" name="pushButton_random_gen">
-            <property name="text">
-             <string>Random initialization</string>
-            </property>
-           </widget>
-          </item>
-          <item row="18" column="0" colspan="2">
-           <widget class="QCheckBox" name="checkBox_trace_1_gen">
-            <property name="text">
-             <string>Leave traces after death</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="0" colspan="2">
-           <widget class="QPushButton" name="pushButton_reset_surface_position">
-            <property name="text">
-             <string>Reset surface position</string>
-            </property>
-           </widget>
-          </item>
-          <item row="19" column="0" colspan="2">
-           <widget class="QCheckBox" name="checkBox_show_grid">
-            <property name="text">
-             <string>Show grid</string>
-            </property>
-           </widget>
-          </item>
-          <item row="13" column="1">
-           <widget class="QLineEdit" name="lineEdit_gens_per_sec"/>
-          </item>
-          <item row="9" column="0">
-           <widget class="QLabel" name="label_9">
-            <property name="text">
-             <string>Height:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="9" column="1">
-           <widget class="QLineEdit" name="lineEdit_surface_height"/>
-          </item>
-          <item row="20" column="0" colspan="2">
+          <item row="21" column="0" colspan="2">
            <widget class="QLabel" name="label_4">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
@@ -283,6 +176,123 @@
              <string/>
             </property>
            </widget>
+          </item>
+          <item row="9" column="0">
+           <widget class="QLabel" name="label_8">
+            <property name="text">
+             <string>Width:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="9" column="1">
+           <widget class="QLineEdit" name="lineEdit_surface_width"/>
+          </item>
+          <item row="2" column="0" colspan="2">
+           <widget class="QPushButton" name="pushButton_stop">
+            <property name="text">
+             <string>Stop</string>
+            </property>
+           </widget>
+          </item>
+          <item row="10" column="1">
+           <widget class="QLineEdit" name="lineEdit_surface_height"/>
+          </item>
+          <item row="4" column="0" colspan="2">
+           <widget class="QPushButton" name="pushButton_next_step">
+            <property name="text">
+             <string>Next generation</string>
+            </property>
+           </widget>
+          </item>
+          <item row="15" column="0">
+           <widget class="QLabel" name="label_5">
+            <property name="text">
+             <string>Random ratio:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0" colspan="2">
+           <widget class="QPushButton" name="pushButton_reset_surface_position">
+            <property name="text">
+             <string>Reset surface position</string>
+            </property>
+           </widget>
+          </item>
+          <item row="10" column="0">
+           <widget class="QLabel" name="label_9">
+            <property name="text">
+             <string>Height:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0" colspan="2">
+           <widget class="QPushButton" name="pushButton_clean_surface">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Clear</string>
+            </property>
+           </widget>
+          </item>
+          <item row="20" column="0" colspan="2">
+           <widget class="QCheckBox" name="checkBox_show_grid">
+            <property name="text">
+             <string>Show grid</string>
+            </property>
+           </widget>
+          </item>
+          <item row="14" column="0">
+           <widget class="QLabel" name="label">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>FPS:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="15" column="1">
+           <widget class="QLineEdit" name="lineEdit_random_ratio"/>
+          </item>
+          <item row="13" column="1">
+           <widget class="QLabel" name="label_show_gens">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>82</width>
+              <height>36</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="13" column="0">
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>GenNum:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="8" column="0">
+           <widget class="QLabel" name="label_10">
+            <property name="text">
+             <string>Core calc</string>
+            </property>
+           </widget>
+          </item>
+          <item row="8" column="1">
+           <widget class="QComboBox" name="comboBox_core_calc"/>
           </item>
          </layout>
         </item>

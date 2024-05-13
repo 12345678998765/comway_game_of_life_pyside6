@@ -56,6 +56,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.lineEdit_surface_width.setText(f"{self.width}")
         self.lineEdit_surface_height.setText(f"{self.height}")
 
+        self.comboBox_core_calc.addItem('numba')
+        self.comboBox_core_calc.addItem('numpy')
+        self.comboBox_core_calc.setCurrentIndex(0)
+        dummy_cells = np.zeros((self.widget_paint_area.rows, self.widget_paint_area.cols), dtype=np.int64)
+        self.widget_paint_area.calc_cells_after_simulation_with_forloop_numba(dummy_cells, self.widget_paint_area.rows, self.widget_paint_area.cols, self.widget_paint_area.survival_world)
+
         self.label_current_status.setText("Ready")
         self.checkBox_show_grid.setChecked(False)
 
@@ -136,6 +142,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 )
                 self.widget_paint_area.locate_start_location_vector = self.widget_paint_area.get_locate_start_location_vector(self.widget_paint_area.grid_move_vector)
                 self.widget_paint_area.update()
+
+    @Slot()
+    def on_comboBox_core_calc_currentIndexChanged(self):
+        if self.comboBox_core_calc.currentText() == 'numba':
+            self.widget_paint_area.core_calc = "numba"
+        if self.comboBox_core_calc.currentText() == 'numpy':
+            self.widget_paint_area.core_calc = "numpy"
+
+        self.widget_paint_area.update()
+        self.on_pushButton_stop_clicked()
 
     @Slot()
     def on_comboBox_board_pattern_currentIndexChanged(self):

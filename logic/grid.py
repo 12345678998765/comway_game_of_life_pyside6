@@ -1,9 +1,10 @@
 from abc import ABC, abstractmethod
-from typing import Optional
+from typing import Optional, Literal
 
 import numpy as np
 from PySide6.QtGui import QPainter, QMouseEvent
 from PySide6.QtWidgets import QWidget, QLabel
+from numba import jit
 from scipy.signal import convolve2d
 
 from logic import constants
@@ -54,6 +55,7 @@ class Grid(QWidget):
         self.mouse_right_button_pressed_pos: Optional[QMouseEvent.position] = None
         self.mouse_right_button_released_pos: Optional[QMouseEvent.position] = None
         self.is_resized = False
+        self.core_calc: Literal["numpy", "numba"] = "numba"
 
     def resizeEvent(self, event):
         self.rows = self.height // self.cell_size
@@ -116,12 +118,40 @@ class Grid(QWidget):
         elif self.survival_world & constants.Flag.Grid.survival_world_donut:
             self.convolved_result = convolve2d(self.cells, self.kernel, mode='same', boundary='wrap')
 
-    def calc_cells_after_simulation(self):
+    def calc_cells_after_simulation_with_numpy(self):
         self.calc_convolve_result()
         self.cells_after_simulation[(self.cells == 1) & ((self.convolved_result < 2) | (self.convolved_result > 3))] = 0
         self.cells_after_simulation[(self.cells == 1) & ((self.convolved_result == 2) | (self.convolved_result == 3))] = 1
         self.cells_after_simulation[(self.cells == 0) & (self.convolved_result == 3)] = 1
         self.cells_after_simulation[(self.cells == 0) & (self.convolved_result != 3)] = 0
+
+    @staticmethod
+    @jit(nopython=True)
+    def calc_cells_after_simulation_with_forloop_numba(cells, rows, cols, survival_world):
+        cells_after_simulation = np.zeros((rows, cols), dtype=np.int64)
+        for row in range(rows):
+            for col in range(cols):
+                count = 0
+                for i in range(-1, 2):
+                    for j in range(-1, 2):
+                        if i == 0 and j == 0:
+                            continue
+                        if survival_world & 2**0:
+                            if 0 <= row + i < rows and 0 <= col + j < cols:
+                                count += cells[row + i][col + j]
+                        elif survival_world & 2**1:
+                            count += cells[(row + i) % rows][(col + j) % cols]
+                if cells[row][col] == 1:
+                    if count < 2 or count > 3:
+                        cells_after_simulation[row][col] = 0
+                    else:
+                        cells_after_simulation[row][col] = 1
+                else:
+                    if count == 3:
+                        cells_after_simulation[row][col] = 1
+                    else:
+                        cells_after_simulation[row][col] = 0
+        return cells_after_simulation
 
     def mark_tail(self):
         if self.show_tail:
@@ -145,7 +175,12 @@ class Grid(QWidget):
 
     def simulation(self, label_show_gens: QLabel):
         if self.running:
-            self.calc_cells_after_simulation()
+            if self.core_calc == "numpy":
+                self.calc_cells_after_simulation_with_numpy()
+            elif self.core_calc == "numba":
+                self.cells_after_simulation = self.calc_cells_after_simulation_with_forloop_numba(self.cells, self.rows, self.cols, self.survival_world)
+            else:
+                raise ValueError("Invalid core calculation.")
             self.mark_tail()
             self.mark_trace_of_death()
             self.cells = self.cells_after_simulation.copy()
